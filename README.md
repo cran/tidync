@@ -4,18 +4,21 @@
 # tidync
 
 [![Travis-CI Build
-Status](http://badges.herokuapp.com/travis/hypertidy/tidync?branch=master&env=BUILD_NAME=xenial_release&label=linux)](https://travis-ci.org/hypertidy/tidync)[![Build
-Status](http://badges.herokuapp.com/travis/hypertidy/tidync?branch=master&env=BUILD_NAME=osx_release&label=osx)](https://travis-ci.org/hypertidy/tidync)
+Status](http://badges.herokuapp.com/travis/ropensci/tidync?branch=master&env=BUILD_NAME=xenial_release&label=linux)](https://travis-ci.org/ropensci/tidync)
+[![Build
+Status](http://badges.herokuapp.com/travis/ropensci/tidync?branch=master&env=BUILD_NAME=osx_release&label=osx)](https://travis-ci.org/ropensci/tidync)
 [![AppVeyor Build
 Status](https://ci.appveyor.com/api/projects/status/github/hypertidy/tidync?branch=master&svg=true)](https://ci.appveyor.com/project/mdsumner/tidync-3m5h7)
 [![Coverage
-status](https://codecov.io/gh/hypertidy/tidync/branch/master/graph/badge.svg)](https://codecov.io/github/hypertidy/tidync?branch=master)[![](https://badges.ropensci.org/174_status.svg)](https://github.com/ropensci/onboarding/issues/174)[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+status](https://codecov.io/gh/ropensci/tidync/branch/master/graph/badge.svg)](https://codecov.io/github/ropensci/tidync?branch=master)[![](https://badges.ropensci.org/174_status.svg)](https://github.com/ropensci/onboarding/issues/174)
+[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/tidync)](https://cran.r-project.org/package=tidync)
+[![CRAN\_Download\_Badge](http://cranlogs.r-pkg.org/badges/tidync)](https://cran.r-project.org/package=tidync)
 
 The goal of tidync is to ease exploring the contents of a NetCDF source
-and constructing efficient queries to extract arbitrary sub-arrays.
+and to simplify the process of data extraction.
 
-The data extracted can be used directly as an array, or in long-form
+When extracting, data can be accessed as array/s, or in long-form as a
 data frame. In contrast to other packages tidync helps reduce the volume
 of code required to discover and read the contents of NetCDF, with
 simple steps:
@@ -45,15 +48,21 @@ to obtain information about data sources.
 
 ## Installation
 
-You can install tidync from github with:
+Install tidync from CRAN.
+
+``` r
+install.packages("tidync")
+```
+
+You can install the development version from github with:
 
 ``` r
 # install.packages("remotes")
-remotes::install_github("hypertidy/tidync", dependencies = TRUE)
+remotes::install_github("ropensci/tidync", dependencies = TRUE)
 ```
 
-Also required are packages ncdf4 and RNetCDF, so first make sure you can
-install and use these.
+The package packages ncdf4 and RNetCDF are required, so first make sure
+you can install and use these if it doesn’t work the first time.
 
 ``` r
 install.packages("ncdf4")
@@ -75,8 +84,8 @@ Windows (not 32-bit), and so tidync will work for those sources too.
 ### MacOS
 
 On MacOS, it should also be easy as there are binaries for ncdf4 and
-RNetCDF available on CRAN. As far as I know, these binaries won’t
-support OpenDAP/Thredds.
+RNetCDF available on CRAN. As far as I know, only RNetCDF will support
+Thredds.
 
 ### Ubuntu/Debian
 
@@ -98,12 +107,14 @@ Then in R
 
 ``` r
 install.packages("remotes")
-remotes::install_github("hypertidy/tidync")
+remotes::install_github("ropensci/tidync")
 ```
 
 At the time of writing the [travis install
-configuration](https://github.com/hypertidy/tidync/blob/master/.travis.yml)
-was set up for “trusty”, Ubuntu 14.04 so also provides a record.
+configuration](https://github.com/ropensci/tidync/blob/master/.travis.yml)
+was set up for “xenial”, Ubuntu 16.04 which was required for using
+[NetCDF sources with
+groups](https://www.unidata.ucar.edu/software/netcdf/workshops/2011/groups-types/GroupsIntro.html).
 
 More general information about system dependencies libnetcdf-dev and
 libudunits2-dev is available from [Unidata
@@ -347,7 +358,7 @@ subs %>% hyper_tbl_cube(select_var = c("PRES", "PRES_QC", "PSAL_ADJUSTED"))
 #> D: N_LEVELS [int, 493]
 #> D: N_PROF [int, 1]
 #> M: PRES [dbl]
-#> M: PRES_QC [chr]
+#> M: PRES_QC [chr[,1]]
 #> M: PSAL_ADJUSTED [dbl]
 ```
 
@@ -362,21 +373,39 @@ by NetCDF itself.
 ### Extractive
 
 Use what we learned interactively to extract the data, either in data
-frame or raw-array (hyper slice)
-form.
+frame or raw-array (hyper slice) form.
 
 ``` r
-## we'll see a column for sst, lat, time, and whatever other dimensions sst has
-## and whatever other variable's the grid has
-tidync(filename) %>% activate("sst") %>% 
-  hyper_filter(lat = lat < -30, time = time == 20) %>% 
+## we'll see a column for the variable activated, and whatever other 
+## variables the grid has
+tidync(filename) %>% activate("JULD") %>% 
+  hyper_filter(N_PROF = N_PROF == 1) %>% 
   hyper_tibble()
+#> # A tibble: 98 x 5
+#>    SCIENTIFIC_CALIB_DATE DATE_TIME N_PROF N_PARAM N_CALIB
+#>    <chr>                     <int>  <int>   <int>   <int>
+#>  1 2                             1      1       1       1
+#>  2 0                             2      1       1       1
+#>  3 1                             3      1       1       1
+#>  4 7                             4      1       1       1
+#>  5 0                             5      1       1       1
+#>  6 4                             6      1       1       1
+#>  7 1                             7      1       1       1
+#>  8 0                             8      1       1       1
+#>  9 1                             9      1       1       1
+#> 10 4                            10      1       1       1
+#> # … with 88 more rows
 
 
-## raw array form, we'll see a (list of) R arrays with a dimension for each seen by tidync(filename) %>% activate("sst"")
-tidync(filename) %>% activate("sst") %>% 
-  hyper_filter(lat = lat < -30, time = time == 20) %>% 
+## native array form, we'll see a (list of) R arrays with a dimension for 
+## each seen by tidync(filename) %>% activate("JULD")
+tidync(filename) %>% activate("JULD") %>% 
+  hyper_filter(N_PROF = N_PROF == 1) %>% 
   hyper_array()
+#> Tidync Data Arrays
+#> Variables (1): 'SCIENTIFIC_CALIB_DATE'
+#> Dimension (4): 14, 7, 1, 1
+#> Source: /perm_storage/home/mdsumner/R/x86_64-pc-linux-gnu-library/3.6/tidync/extdata/argo/MD5903593_001.nc
 ```
 
 It’s important to not actual request the data extraction until the
@@ -393,8 +422,6 @@ or not.
 See the vignettes for more:
 
 ``` r
-vignette("tidync-examples")
-
 browseVignettes(package = "tidync")
 ```
 
@@ -424,8 +451,13 @@ explored that here and it may or may not be a good idea:
   - **activation** - choice of a given grid to apply subsetting and read
     operations to
 
+-----
+
 ## Code of conduct
 
 Please note that this project is released with a [Contributor Code of
 Conduct](CONDUCT.md). By participating in this project you agree to
-abide by its terms.
+abide by its
+terms.
+
+[![ropensci\_footer](https://ropensci.org/public_images/ropensci_footer.png)](https://ropensci.org)

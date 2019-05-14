@@ -28,12 +28,13 @@
 hyper_transforms <- function(x, all = FALSE, ...) {
   UseMethod("hyper_transforms")
 }
-axis_transforms <- function(x, ...) {
-  .Defunct("hyper_transforms")
-  UseMethod("hyper_transforms")
-}
+
 active_axis_transforms <- function(x, ...) {
-  grid <- x$grid %>% tidyr::unnest()
+  if (utils::packageVersion("tidyr") > "0.8.3" ) {
+    grid <- x$grid %>% tidyr::unnest(cols = c(.data$variables))
+  } else {
+    grid <- x$grid %>% tidyr::unnest()
+  }
   axis <- x$axis
   dimension <- x$dimension
   active_x <- active(x)
@@ -73,7 +74,7 @@ hyper_transforms.default <- function(x, all = FALSE, ...) {
     axis <- tibble::as_tibble(ll)
     names(axis)  <- dims$name[i]
     ## axis might have a column called "i"  
-    ## https://github.com/hypertidy/tidync/issues/74
+    ## tidync/issues/74
     id_value <- dims$dimension[i]
     dim_name <- dims$name[i]
     dim_coord <- dims$coord_dim[i]

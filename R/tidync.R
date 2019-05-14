@@ -57,8 +57,11 @@ tidync <- function(x, what, ...) {
 #' ## for 31 day period January 2008 (S20080012008031) 
 #' f <- "S20080012008031.L3m_MO_CHL_chlor_a_9km.nc"
 #' l3file <- system.file("extdata/oceandata", f, package= "tidync")
+#' ## skip on Solaris
+#' if (!tolower(Sys.info()[["sysname"]]) == "sunos") {
 #' tnc <- tidync(l3file)
 #' print(tnc)
+#' }
 #' 
 #' ## very simple Unidata example file, with one dimension
 #' \dontrun{
@@ -127,7 +130,12 @@ tidync.character <- function(x, what, ...) {
   if (nrow(out$axis) < 1) return(out)
   if (missing(what)) {
     varg  <- first_numeric_var(out)
-    gg <- tidyr::unnest(out$grid)
+    if (utils::packageVersion("tidyr") > "0.8.3" ) {
+      gg <- tidyr::unnest(out$grid, cols = c(.data$variables))
+      
+    } else {
+      gg <- tidyr::unnest(out$grid)
+    }
     what <- gg$grid[match(varg, gg$variable)]
    
   }
@@ -212,7 +220,11 @@ print.tidync <- function(x, ...) {
   active_sh <- active(x)
   nms <- if(nrow(ushapes) > 0)  nchar(ushapes$grid) else 0
   longest <- sprintf("[%%i]   %%%is", -max(nms))
-  vargrids <- tidyr::unnest(x$grid)
+  if (utils::packageVersion("tidyr") > "0.8.3" ) {
+    vargrids <- tidyr::unnest(x$grid, cols = c(.data$variables))
+  } else {
+    vargrids <- tidyr::unnest(x$grid)
+  }
   estimatebigtime <- vargrids %>% 
     dplyr::filter(.data$grid == active(x)) %>% 
     dplyr::inner_join(x$axis, "variable") %>% 
@@ -259,7 +271,7 @@ print.tidync <- function(x, ...) {
 
   idxnm <- match(names(x$transforms), dims$name)
   dims$dmin <- dims$dmax <- dims$min <- dims$max <- NA_real_
-  ## fix https://github.com/hypertidy/tidync/issues/84
+  ## fix tidync/issues/84
   ## idxnm was used on the LHS here as well, garbling the order
   
   dims[idxnm, c("dmin", "dmax")] <- as.data.frame(filter_ranges)

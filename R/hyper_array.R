@@ -3,7 +3,7 @@
 #' Extract the raw array data as a list of  one or more arrays. This can be the
 #' entire variable/s or after dimension-slicing using [hyper_filter()]
 #' expressions. This is a delay-breaking function and causes data to be read 
-#' from the source into raw arrays in R's native form. This list of arrays is 
+#' from the source into R native arrays. This list of arrays is 
 #' lightly classed as [tidync_data], with methods for [print()] and [tidync()]. 
 #'
 #' The function [hyper_array()] will act on an existing tidync object or a source
@@ -109,14 +109,19 @@ hyper_array.tidync <- function(x, select_var = NULL, ...,
                      start = START, count = COUNT, 
                      raw_datavals = raw_datavals, collapse_degen = drop)
   }
-  mess <- sprintf("pretty big extraction here with (%i*%i values [%s]*%i", 
+  mess <- sprintf("pretty big extraction, (%i*%i values [%s]*%i", 
                   as.integer(prod( COUNT)), length(varnames), 
                   paste( COUNT, collapse = ", "), 
                   length(varnames))
-  if ((prod(dimension[["count"]]) * length(varnames)) > 1.2e9 && 
+  
+  #browser()
+  if ((prod(dimension[["count"]]) * length(varnames)) * 4 > 1e9 && 
         interactive() && !force) {
-    yes <- yesno::yesno(mess, "\nProceed?")
-    if (!yes) return(invisible(NULL))
+    yes <- utils::askYesNo(mess)
+    if (!yes) {
+      message("aborting data extraction, use 'force = TRUE' to avoid size check")
+      return(invisible(NULL))
+    }
   }
   transforms <- x[["transforms"]][x[["dimension"]] %>% 
                                     dplyr::filter(.data$active) %>% 

@@ -35,12 +35,12 @@ concentration %>% hyper_filter(nj = nj < 20)
 
 ## ------------------------------------------------------------------------
 concentration %>% 
-  hyper_filter(ni = index < 20, 
+  hyper_filter(ni = index < 50, 
                nj = dplyr::between(index, 30, 100))
 
 ## ------------------------------------------------------------------------
 hf <- concentration %>% 
-  hyper_filter(ni = index < 20, 
+  hyper_filter(ni = index > 150, 
                nj = dplyr::between(index, 30, 100))
 
 ## as an array
@@ -50,7 +50,7 @@ str(arr)
 ## as a data frame
 hf %>% 
   hyper_tibble() %>% 
-  dplyr::filter(!is.na(concentration))
+  dplyr::filter(!is.na(concentration)) %>% dplyr::distinct(concentration, quality_flag)
 
 ## ----sea-ice-example-----------------------------------------------------
 hf
