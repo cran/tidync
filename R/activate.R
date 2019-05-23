@@ -30,7 +30,7 @@
 #' how activation would occur for scalars, but in future perhaps `activate("S")`
 #' could be the right way forward.
 #' @param .data NetCDF object
-#' @param what name of a variable
+#' @param what name of a grid or variable
 #' @param ... reserved, currently ignored
 #' @param select_var optional argument to set selected state of variable/s by
 #'   name
@@ -39,13 +39,15 @@
 #' @rdname activate
 #' @aliases active activate active<-
 #' @examples
-#' l3file <- "S20080012008031.L3m_MO_CHL_chlor_a_9km.nc"
-#' rnc <- tidync(system.file("extdata", "oceandata", l3file,
-#' package = "tidync"))
-#' activate(rnc, "palette")
+#' if (!tolower(Sys.info()[["sysname"]]) == "sunos") {
+#'  l3file <- "S20080012008031.L3m_MO_CHL_chlor_a_9km.nc"
+#'  rnc <- tidync(system.file("extdata", "oceandata", l3file,
+#'  package = "tidync"))
+#'  activate(rnc, "palette")
 #'
-#' ## extract available grid names
-#' hyper_grids(rnc)
+#'  ## extract available grid names
+#'  hyper_grids(rnc)
+#' }
 #' @seealso hyper_filter hyper_tibble hyper_tbl_cube
 #' @name activate
 #' @export
@@ -73,6 +75,7 @@ activate.tidync <- function(.data, what, ..., select_var = NULL) {
   }
 
   if (is.numeric(what)) {
+    stop("numeric 'what' is not supported, use grid name or variable name")
     ## this pattern is copied from print
     ## remove $variables because it a list 
     ushapes <- dplyr::distinct(.data$grid %>% 

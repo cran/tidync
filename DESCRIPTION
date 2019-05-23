@@ -1,6 +1,6 @@
 Package: tidync
 Title: A Tidy Approach to 'NetCDF' Data Exploration and Extraction
-Version: 0.2.0
+Version: 0.2.1
 Authors@R: c(person("Michael", "Sumner", email = "mdsumner@gmail.com", role = c("aut", "cre")), 
              person("Simon", "Wotherspoon", role = "ctb"), 
              person("Tomas", "Remenyi", role = "ctb"), 
@@ -13,7 +13,7 @@ Description: Tidy tools for 'NetCDF' data sources. Explore the contents of a
  filter value or index expressions to array-slicing form. No data is read until 
  explicitly requested, as a data frame or list of arrays via hyper_tibble() or 
  hyper_array(). 
-Depends: R (>= 3.3.0)
+Depends: R (>= 3.5.0)
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
@@ -26,7 +26,7 @@ URL: https://github.com/ropensci/tidync
 BugReports: https://github.com/ropensci/tidync/issues
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2019-05-14 22:04:13 UTC; mdsumner
+Packaged: 2019-05-23 10:52:35 UTC; mdsumner
 Author: Michael Sumner [aut, cre],
   Simon Wotherspoon [ctb],
   Tomas Remenyi [ctb],
@@ -35,4 +35,4 @@ Author: Michael Sumner [aut, cre],
   Tim Lucas [ctb]
 Maintainer: Michael Sumner <mdsumner@gmail.com>
 Repository: CRAN
-Date/Publication: 2019-05-14 22:20:03 UTC
+Date/Publication: 2019-05-23 11:10:03 UTC
