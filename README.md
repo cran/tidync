@@ -166,10 +166,6 @@ is there, and for extraction. The functions `tidync` and `activate` and
 and functions `hyper_array`, `hyper_tibble` and `hyper_tbl_cube` give
 raw-array or data frames.
 
-Also
-[http://www.matteodefelice.name/research/2018/01/14/tidyverse-and-netcdfs-a-first-exploration/](this%20blog)
-post by Matteo De Felice.
-
 ### Interactive
 
 Use `tidync()` and `hyper_filter()` to discern what variables and
@@ -356,7 +352,7 @@ subs %>% hyper_tibble()
 #> #   BBP700_ADJUSTED <dbl>, BBP700_ADJUSTED_QC <chr>,
 #> #   BBP700_ADJUSTED_ERROR <dbl>, NITRATE <dbl>, NITRATE_QC <chr>,
 #> #   NITRATE_ADJUSTED <dbl>, NITRATE_ADJUSTED_QC <chr>,
-#> #   NITRATE_ADJUSTED_ERROR <dbl>, N_PROF <int>, N_LEVELS <int>
+#> #   NITRATE_ADJUSTED_ERROR <dbl>, N_LEVELS <int>, N_PROF <int>
 subs %>% hyper_tbl_cube(select_var = c("PRES", "PRES_QC", "PSAL_ADJUSTED"))
 #> Source: local array [493 x 2]
 #> D: N_LEVELS [int, 493]
@@ -374,6 +370,22 @@ be activated by their count identifier (starting at 1). The “D0” is an
 identifier, it matches the internal 0-based indexing and identity used
 by NetCDF itself.
 
+Please note that `hyper_filter()` expressions must be unique, unlike
+with `dplyr::filter()` we cannot load multiple comparisons into one.
+
+While dplyr filter can load up multiple comparisons:
+
+``` r
+df %>% dplyr::filter(longitude > 100, longitude < 150)
+```
+
+in hyper\_filter we must load them into one named
+expression.
+
+``` r
+tidync(filename) %>% hyper_filter(longitude = longitude > 100 & longitude < 150)
+```
+
 ### Extractive
 
 Use what we learned interactively to extract the data, either in data
@@ -386,18 +398,18 @@ tidync(filename) %>% activate("JULD") %>%
   hyper_filter(N_PROF = N_PROF == 1) %>% 
   hyper_tibble()
 #> # A tibble: 98 x 5
-#>    SCIENTIFIC_CALIB_DATE DATE_TIME N_PROF N_PARAM N_CALIB
-#>    <chr>                     <int>  <int>   <int>   <int>
-#>  1 2                             1      1       1       1
-#>  2 0                             2      1       1       1
-#>  3 1                             3      1       1       1
-#>  4 7                             4      1       1       1
-#>  5 0                             5      1       1       1
-#>  6 4                             6      1       1       1
-#>  7 1                             7      1       1       1
-#>  8 0                             8      1       1       1
-#>  9 1                             9      1       1       1
-#> 10 4                            10      1       1       1
+#>    SCIENTIFIC_CALIB_DATE DATE_TIME N_PARAM N_CALIB N_PROF
+#>    <chr>                     <int>   <int>   <int>  <int>
+#>  1 2                             1       1       1      1
+#>  2 0                             2       1       1      1
+#>  3 1                             3       1       1      1
+#>  4 7                             4       1       1      1
+#>  5 0                             5       1       1      1
+#>  6 4                             6       1       1      1
+#>  7 1                             7       1       1      1
+#>  8 0                             8       1       1      1
+#>  9 1                             9       1       1      1
+#> 10 4                            10       1       1      1
 #> # … with 88 more rows
 
 
@@ -406,9 +418,9 @@ tidync(filename) %>% activate("JULD") %>%
 tidync(filename) %>% activate("JULD") %>% 
   hyper_filter(N_PROF = N_PROF == 1) %>% 
   hyper_array()
-#> Tidync Data Arrays
+#> Class: tidync_data (list of tidync data arrays)
 #> Variables (1): 'SCIENTIFIC_CALIB_DATE'
-#> Dimension (4): 14, 7, 1, 1
+#> Dimension (4): DATE_TIME,N_PARAM,N_CALIB,N_PROF (14, 7, 1, 1)
 #> Source: /perm_storage/home/mdsumner/R/x86_64-pc-linux-gnu-library/3.6/tidync/extdata/argo/MD5903593_001.nc
 ```
 
@@ -460,8 +472,8 @@ explored that here and it may or may not be a good idea:
 ## Code of conduct
 
 Please note that this project is released with a [Contributor Code of
-Conduct](CONDUCT.md). By participating in this project you agree to
-abide by its
+Conduct](https://github.com/ropensci/tidync/blob/master/CONDUCT.md). By
+participating in this project you agree to abide by its
 terms.
 
 [![ropensci\_footer](https://ropensci.org/public_images/ropensci_footer.png)](https://ropensci.org)
