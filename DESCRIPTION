@@ -1,6 +1,6 @@
 Package: tidync
 Title: A Tidy Approach to 'NetCDF' Data Exploration and Extraction
-Version: 0.2.2
+Version: 0.2.3
 Authors@R: c(person("Michael", "Sumner", email = "mdsumner@gmail.com", role = c("aut", "cre")), 
              person("Simon", "Wotherspoon", role = "ctb"), 
              person("Tomas", "Remenyi", role = "ctb"), 
@@ -18,7 +18,7 @@ License: GPL-3
 Encoding: UTF-8
 LazyData: true
 ByteCompile: true
-Imports: dplyr (>= 0.7.0), forcats, magrittr, ncdf4, ncmeta (>= 0.0.4),
+Imports: dplyr (>= 0.7.0), forcats, magrittr, ncdf4, ncmeta (>= 0.2.0),
         purrr, RNetCDF (>= 1.9-1), rlang, tibble, tidyr
 RoxygenNote: 6.1.1
 Suggests: ggplot2, knitr, rmarkdown, testthat, covr
@@ -26,7 +26,7 @@ URL: https://docs.ropensci.org/tidync/
 BugReports: https://github.com/ropensci/tidync/issues
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2019-10-22 11:21:31 UTC; mdsumner
+Packaged: 2019-11-06 22:30:28 UTC; mdsumner
 Author: Michael Sumner [aut, cre],
   Simon Wotherspoon [ctb],
   Tomas Remenyi [ctb],
@@ -35,4 +35,4 @@ Author: Michael Sumner [aut, cre],
   Tim Lucas [ctb]
 Maintainer: Michael Sumner <mdsumner@gmail.com>
 Repository: CRAN
-Date/Publication: 2019-10-22 11:50:02 UTC
+Date/Publication: 2019-11-07 00:00:02 UTC
