@@ -1,12 +1,13 @@
 Package: tidync
 Title: A Tidy Approach to 'NetCDF' Data Exploration and Extraction
-Version: 0.2.3
+Version: 0.2.4
 Authors@R: c(person("Michael", "Sumner", email = "mdsumner@gmail.com", role = c("aut", "cre")), 
              person("Simon", "Wotherspoon", role = "ctb"), 
              person("Tomas", "Remenyi", role = "ctb"), 
              person("Ben", "Raymond", role = "ctb"), 
              person("Jakub", "Nowosad", role = "ctb"), 
-             person("Tim", "Lucas", role = "ctb"))
+             person("Tim", "Lucas", role = "ctb"), 
+             person("Hadley", "Wickham", role = "ctb"))
 Description: Tidy tools for 'NetCDF' data sources. Explore the contents of a 
  'NetCDF' source (file or URL) presented as variables organized by grid with a 
  database-like interface. The hyper_filter() interactive function translates the 
@@ -20,19 +21,20 @@ LazyData: true
 ByteCompile: true
 Imports: dplyr (>= 0.7.0), forcats, magrittr, ncdf4, ncmeta (>= 0.2.0),
         purrr, RNetCDF (>= 1.9-1), rlang, tibble, tidyr
-RoxygenNote: 6.1.1
-Suggests: ggplot2, knitr, rmarkdown, testthat, covr
+RoxygenNote: 7.1.0
+Suggests: ggplot2, knitr, rmarkdown, testthat, covr, cubelyr
 URL: https://docs.ropensci.org/tidync/
 BugReports: https://github.com/ropensci/tidync/issues
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2019-11-06 22:30:28 UTC; mdsumner
+Packaged: 2020-05-12 07:44:36 UTC; mdsumner
 Author: Michael Sumner [aut, cre],
   Simon Wotherspoon [ctb],
   Tomas Remenyi [ctb],
   Ben Raymond [ctb],
   Jakub Nowosad [ctb],
-  Tim Lucas [ctb]
+  Tim Lucas [ctb],
+  Hadley Wickham [ctb]
 Maintainer: Michael Sumner <mdsumner@gmail.com>
 Repository: CRAN
-Date/Publication: 2019-11-07 00:00:02 UTC
+Date/Publication: 2020-05-12 08:00:02 UTC
