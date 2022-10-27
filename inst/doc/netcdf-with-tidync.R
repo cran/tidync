@@ -18,10 +18,10 @@ tidync(ice_file)
 tidync(ice_file) %>% activate("D2")
 
 ## ----NSE-activate-------------------------------------------------------------
-tidync(ice_file) %>% activate(time)
+tidync(ice_file) %>% activate("time")
 
 ## choose grid by variable name, which happens to be the default grid here
-tidync(ice_file) %>% activate(quality_flag)
+tidync(ice_file) %>% activate("quality_flag")
 
 ## same as the default
 tidync(ice_file) %>% activate("D0,D1,D2")

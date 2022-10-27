@@ -6,6 +6,12 @@
 #' from the source into R native arrays. This list of arrays is 
 #' lightly classed as [tidync_data], with methods for [print()] and [tidync()]. 
 #'
+#' The function [hyper_array()] is used by [hyper_tibble()] and [hyper_tbl_cube()]
+#' to actually extract data arrays from NetCDF, if a result would be particularly large
+#' there is a check made and user-opportunity to cancel. This is controllable as an 
+#' option `getOption('tidync.large.data.check')`, and can be set to never check with
+#' `options(tidync.large.data.check = FALSE)`. 
+#' 
 #' The function [hyper_array()] will act on an existing tidync object or a source
 #' string.
 #'
@@ -62,7 +68,9 @@ hyper_array <- function(x, select_var = NULL, ...,
 #' @export
 hyper_slice <- function(x, select_var = NULL, ..., 
                         raw_datavals = FALSE, force = FALSE, drop = TRUE) {
-  warning("hyper_array should be used instead of hyper_slice")
+  if (!isTRUE(getOption("tidync.silent"))) {
+   warning("hyper_array should be used instead of hyper_slice")
+  }
   hyper_array(x = x, select_var = select_var, ..., 
               raw_datavals = raw_datavals, force = force, drop = drop)
 }
@@ -93,8 +101,10 @@ hyper_array.tidync <- function(x, select_var = NULL, ...,
       
       select_var <- base::intersect(select_var, variable[["name"]])
       if (length(select_var) < 1) stop("no select_var variables available")
-      warning(sprintf("some select_var variables not found, and ignored:\n %s",
+      if (!isTRUE(getOption("tidync.silent"))) {
+        warning(sprintf("some select_var variables not found, and ignored:\n %s",
                       paste(bad, collapse = ",")))
+      }
     }
     ## todo, make this quosic?
     varnames <- select_var
@@ -115,12 +125,18 @@ hyper_array.tidync <- function(x, select_var = NULL, ...,
                   length(varnames))
   
   #browser()
-  if ((prod(dimension[["count"]]) * length(varnames)) * 4 > 1e9 && 
+  opt <- getOption("tidync.large.data.check")
+  if (!isTRUE(opt)) {
+    opt <- FALSE
+  }
+  if (opt && (prod(dimension[["count"]]) * length(varnames)) * 4 > 1e9 && 
         interactive() && !force) {
+    message("please confirm data extraction, Y(es) to proceed ... use 'force = TRUE' to avoid size check\n (  see '?hyper_array')")
+    
     yes <- utils::askYesNo(mess)
     if (!yes) {
-      message("aborting data extraction, use 'force = TRUE' to avoid size check")
-      return(invisible(NULL))
+      stop("extraction cancelled by user", call. = FALSE)
+##       return(invisible(NULL))
     }
   }
   transforms <- active_axis_transforms(x)
@@ -145,7 +161,7 @@ hyper_array.tidync <- function(x, select_var = NULL, ...,
 #' @name hyper_array
 #' @export
 hyper_array.character <- function(x,  select_var = NULL, ...,
-                                  raw_datavals = FALSE, drop = TRUE) {
+                                  raw_datavals = FALSE, force = FALSE, drop = TRUE) {
   tidync(x) %>% 
     hyper_filter(...) %>%  
     hyper_array(select_var = select_var, 

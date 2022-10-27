@@ -35,7 +35,14 @@ hyper_slice(
   drop = TRUE
 )
 
-\method{hyper_array}{character}(x, select_var = NULL, ..., raw_datavals = FALSE, drop = TRUE)
+\method{hyper_array}{character}(
+  x,
+  select_var = NULL,
+  ...,
+  raw_datavals = FALSE,
+  force = FALSE,
+  drop = TRUE
+)
 }
 \arguments{
 \item{x}{NetCDF file, connection object, or \link{tidync} object}
@@ -59,6 +66,12 @@ from the source into R native arrays. This list of arrays is
 lightly classed as \link{tidync_data}, with methods for \code{\link[=print]{print()}} and \code{\link[=tidync]{tidync()}}.
 }
 \details{
+The function \code{\link[=hyper_array]{hyper_array()}} is used by \code{\link[=hyper_tibble]{hyper_tibble()}} and \code{\link[=hyper_tbl_cube]{hyper_tbl_cube()}}
+to actually extract data arrays from NetCDF, if a result would be particularly large
+there is a check made and user-opportunity to cancel. This is controllable as an
+option \code{getOption('tidync.large.data.check')}, and can be set to never check with
+\code{options(tidync.large.data.check = FALSE)}.
+
 The function \code{\link[=hyper_array]{hyper_array()}} will act on an existing tidync object or a source
 string.
 
