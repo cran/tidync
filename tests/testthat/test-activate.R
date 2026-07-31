@@ -18,7 +18,7 @@
                         package = "tidync", mustWork = TRUE)
    tnc <- tidync(ufile)
 
-   expect_silent(activate(tnc, select_var = "precip24hrQCD")) %>% 
+   expect_silent(activate(tnc, select_var = "precip24hrQCD")) |> 
      hyper_tibble()
   ## changed with nesting of variables in nc_grids 
   ## https://github.com/hypertidy/ncmeta/issues/26
@@ -27,15 +27,15 @@
   
   
   ## use variable to find grid
-  tnc1 <-  tnc %>% activate(handbook5Id)
+  tnc1 <-  tnc |> activate(handbook5Id)
   expect_equal(active(tnc1),  "D1,D12")
   
   ## use number to find grid, is defunct
-  expect_error(tnc %>% activate(3))
+  expect_error(tnc |> activate(3))
   expect_error(activate(tnc, 0))
 
   
-  expect_error(activate(tnc, snarfleglobber), "not found")
+  expect_error(activate(tnc, .xyzzy_no_such_tidync_var), "Activate grids by name")
   snarfleglobber <-   "snarfleglobber "
   expect_error(activate(tnc, snarfleglobber), "Activate grids by name")
   

@@ -58,6 +58,10 @@ applied or not}
 
 \item{drop}{collapse degenerate dimensions, defaults to \code{TRUE}}
 }
+\value{
+a named list of arrays classed as \code{tidync_data}, one element per
+variable, with dimension coordinates stored in the \code{transforms} attribute
+}
 \description{
 Extract the raw array data as a list of  one or more arrays. This can be the
 entire variable/s or after dimension-slicing using \code{\link[=hyper_filter]{hyper_filter()}}
@@ -78,7 +82,7 @@ string.
 By default all variables in the active grid are returned, use \code{select_var} to
 specify one or more desired variables.
 
-The transforms are stored as a list of tables in an attribute `transforms``,
+The transforms are stored as a list of tables in an attribute \code{transforms},
 access these with \code{\link[=hyper_transforms]{hyper_transforms()}}.
 }
 \examples{
@@ -87,18 +91,18 @@ l3file <- system.file("extdata/oceandata", f, package= "tidync")
 
 ## extract a raw list by filtered dimension
 library(dplyr)
-araw1 <- tidync(l3file) \%>\%
+araw1 <- tidync(l3file) |>
  hyper_filter(lat = between(lat, -78, -75.8), 
-              lon = between(lon, 165, 171)) \%>\%
+              lon = between(lon, 165, 171)) |>
  hyper_array()
 
-araw <- tidync(l3file) \%>\% 
+araw <- tidync(l3file) |> 
          hyper_filter(lat = abs(lat) < 10, 
-                     lon = index < 100) \%>\%
+                     lon = index < 100) |>
   hyper_array()
 
 ## hyper_array will pass the expressions to hyper_filter
-braw <- tidync(l3file) \%>\% 
+braw <- tidync(l3file) |> 
   hyper_array(lat = abs(lat) < 10, lon = index < 100)
 
 ## get the transforms tables (the axis coordinates)

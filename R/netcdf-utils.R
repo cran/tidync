@@ -10,10 +10,15 @@
 #' @param v variable name
 #' @param test if true we make sure the connection can be open, not applied for connections themselves
 #'
+#' @return array of values for the requested variable
 #' @importFrom ncdf4 nc_open nc_close ncvar_get
 #' @importFrom RNetCDF open.nc close.nc var.get.nc
-#' @importFrom purrr safely
 #' @export
+#' @examples
+#' l3file <- "S20080012008031.L3m_MO_CHL_chlor_a_9km.nc"
+#' fpath <- system.file("extdata", "oceandata", l3file,
+#' package = "tidync")
+#' lat <- nc_get(fpath, "lat")
 nc_get <- function(x, v, test = FALSE) {
   UseMethod("nc_get")
 }
@@ -22,10 +27,9 @@ nc_get.character <- function(x, v, test = FALSE) {
   if (!test) {
     con <- RNetCDF::open.nc(x)
     on.exit(RNetCDF::close.nc(con), add = TRUE)
-  
-    safe_get <- purrr::safely(nc_get.NetCDF)
-    val <- safe_get(con, v)
-    if (!is.null(val$result)) return(val$result)
+
+    val <- tryCatch(nc_get.NetCDF(con, v), error = function(e) NULL)
+    if (!is.null(val)) return(val)
   } else {
   con4 <- NULL
   ## issue #119
@@ -33,12 +37,11 @@ nc_get.character <- function(x, v, test = FALSE) {
   con4 <- ncdf4::nc_open(x, readunlim = FALSE, verbose = FALSE, 
                          auto_GMT = FALSE, suppress_dimvals = TRUE))
   on.exit(ncdf4::nc_close(con4), add = TRUE)
-  safe_get4 <- purrr::safely(nc_get.ncdf4)
-  val <- safe_get4(con4, v)
-  if (is.null(val[["result"]])) {
+  val <- tryCatch(nc_get.ncdf4(con4, v), error = function(e) NULL)
+  if (is.null(val)) {
     stop(sprintf("no variable found %s", v))
   } else {
-    return(val[["result"]])
+    return(val)
   }
   
   }
@@ -53,4 +56,20 @@ nc_get.NetCDF <- function(x, v, test = FALSE) {
 #' @export
 nc_get.ncdf4 <- function(x, v, test = FALSE) {
   ncdf4::ncvar_get(x, v)
+}
+
+#' Read the length of a single dimension from a NetCDF source.
+#'
+#' Used internally by the multi-source constructor in fast mode when
+#' the concat dimension has no coordinate variable (coord_dim = FALSE).
+#'
+#' @param x file path or URI
+#' @param dimname name of the dimension
+#' @return integer, the dimension length
+#' @noRd
+nc_dim_len <- function(x, dimname) {
+  con <- RNetCDF::open.nc(x)
+  on.exit(RNetCDF::close.nc(con), add = TRUE)
+  info <- RNetCDF::dim.inq.nc(con, dimname)
+  info$length
 }

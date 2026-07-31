@@ -4,15 +4,15 @@ argofile <- system.file("extdata/argo/MD5903593_001.nc",
 x <- tidync(argofile)
 
 test_that("dimension matchup works", {
-  expect_named(x %>% hyper_tibble(select_var = c("PRES", "PRES_QC")), 
-               c("PRES", "PRES_QC",  "N_LEVELS", "N_PROF")) %>% nrow() %>% 
+  expect_named(x |> hyper_tibble(select_var = c("PRES", "PRES_QC")), 
+               c("PRES", "PRES_QC",  "N_LEVELS", "N_PROF")) |> nrow() |> 
     expect_equal(986L)
   
-  tab <- x %>% hyper_filter(N_LEVELS = N_LEVELS < 20) %>%  
+  tab <- x |> hyper_filter(N_LEVELS = N_LEVELS < 20) |>  
     hyper_tibble(select_var = c("TEMP_ADJUSTED_QC", "NITRATE_ADJUSTED", 
                                 "CHLA_ADJUSTED_ERROR"))
   expect_equal(dim(tab), c(38L, 5L))
-  expect_equal(purrr::map_chr(tab, typeof), c(TEMP_ADJUSTED_QC = "character",
+  expect_equal(vapply(tab, typeof, FUN.VALUE=""), c(TEMP_ADJUSTED_QC = "character",
                                               NITRATE_ADJUSTED = "double",
                                               CHLA_ADJUSTED_ERROR = "double",
                                               N_LEVELS = "integer",
@@ -82,8 +82,8 @@ test_that("expanded tibble order is sane",
                                                select_var = c("BBP700", "NITRATE")), 
                                    "tidync_data")  
             expect_named(ar2, c("BBP700", "NITRATE"))
-            expect_equal(dim(ar2[[1]]), c(493))
-        
+            expect_null(dim(ar2[[1]]))
+            expect_length(ar2[[1]], 493L)
             expect_equal(attr(ar2, "transforms")$N_LEVELS$N_LEVELS, 
                          1:493)
             expect_true(all(attr(ar2, "transforms")$N_LEVELS$N_LEVELS))

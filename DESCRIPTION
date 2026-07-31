@@ -1,7 +1,7 @@
 Package: tidync
-Title: A Tidy Approach to 'NetCDF' Data Exploration and Extraction
-Version: 0.4.0
-Authors@R: c(person("Michael", "Sumner", email = "mdsumner@gmail.com", role = c("aut", "cre")), 
+Title: Tidy Approach to 'NetCDF' Data Exploration and Extraction
+Version: 0.5.0
+Authors@R: c(person("Michael", "Sumner", email = "mdsumner@gmail.com", role = c("aut", "cre", "cph")), 
              person("Simon", "Wotherspoon", role = "ctb"), 
              person("Tomas", "Remenyi", role = "ctb"), 
              person("Ben", "Raymond", role = "ctb"), 
@@ -17,22 +17,21 @@ Description: Tidy tools for 'NetCDF' data sources. Explore the contents of a
  filter value or index expressions to array-slicing form. No data is read until 
  explicitly requested, as a data frame or list of arrays via hyper_tibble() or 
  hyper_array(). 
-Depends: R (>= 3.5.0)
+Depends: R (>= 4.1.0)
 License: GPL-3
 Encoding: UTF-8
 ByteCompile: true
-Imports: dplyr (>= 0.7.0), forcats, magrittr, ncdf4, ncmeta (>= 0.2.0),
-        purrr, RNetCDF (>= 1.9-1), rlang, tibble, tidyr, CFtime (>=
-        1.4.0)
-RoxygenNote: 7.3.2
-Suggests: ggplot2, knitr, rmarkdown, testthat, covr, cubelyr
+Imports: dplyr (>= 1.1.0), ncdf4, ncmeta (>= 0.5.0), RNetCDF (>=
+        1.9-1), rlang, tibble, tidyr (>= 1.0.0), CFtime (>= 1.4.0)
+Suggests: ggplot2, knitr, mirai, rmarkdown, testthat, covr, cubelyr
 SystemRequirements: netcdf udunits-2
 URL: https://docs.ropensci.org/tidync/
 BugReports: https://github.com/ropensci/tidync/issues
 VignetteBuilder: knitr
+Config/roxygen2/version: 8.0.0
 NeedsCompilation: no
-Packaged: 2024-08-17 07:41:00 UTC; mdsumner
-Author: Michael Sumner [aut, cre],
+Packaged: 2026-07-31 11:42:08 UTC; mdsumner
+Author: Michael Sumner [aut, cre, cph],
   Simon Wotherspoon [ctb],
   Tomas Remenyi [ctb],
   Ben Raymond [ctb],
@@ -44,4 +43,4 @@ Author: Michael Sumner [aut, cre],
   Fabian Bernhard [ctb]
 Maintainer: Michael Sumner <mdsumner@gmail.com>
 Repository: CRAN
-Date/Publication: 2024-08-17 08:00:02 UTC
+Date/Publication: 2026-07-31 13:00:02 UTC

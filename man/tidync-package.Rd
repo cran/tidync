@@ -3,13 +3,13 @@
 \docType{package}
 \name{tidync-package}
 \alias{tidync-package}
-\title{tidync: A Tidy Approach to 'NetCDF' Data Exploration and Extraction}
+\title{tidync: Tidy Approach to 'NetCDF' Data Exploration and Extraction}
 \description{
 Tidy tools for 'NetCDF' data sources. Explore the contents of a 'NetCDF' source (file or URL) presented as variables organized by grid with a database-like interface. The hyper_filter() interactive function translates the filter value or index expressions to array-slicing form. No data is read until explicitly requested, as a data frame or list of arrays via hyper_tibble() or hyper_array().
 
 Provides easy to use idioms for working with NetCDF data for extraction,
 manipulation and visualization. NetCDF is Network Common Data Form
-\url{https://www.unidata.ucar.edu/software/netcdf/}.
+\url{https://www.unidata.ucar.edu/software/netcdf}.
 }
 \details{
 See \code{\link[=print.tidync]{print.tidync()}} for details on the printed version of a tidync object.
@@ -42,15 +42,15 @@ The following options are available.
 \examples{
 argofile <- system.file("extdata/argo/MD5903593_001.nc", package = "tidync")
 argo <- tidync(argofile)
-argo \%>\% active()
-argo \%>\% activate("D3,D8") \%>\% hyper_array()
-argo \%>\% hyper_filter(N_LEVELS = index < 4)
-argo \%>\% hyper_tbl_cube()
-argo \%>\% hyper_tibble(select_var = c("TEMP_QC"))
-argo \%>\% hyper_transforms()
-argo \%>\% hyper_vars()
-argo \%>\% hyper_dims()
-argo \%>\% hyper_grids()
+argo |> active()
+argo |> activate("D3,D8") |> hyper_array()
+argo |> hyper_filter(N_LEVELS = index < 4)
+argo |> hyper_tbl_cube()
+argo |> hyper_tibble(select_var = c("TEMP_QC"))
+argo |> hyper_transforms()
+argo |> hyper_vars()
+argo |> hyper_dims()
+argo |> hyper_grids()
 
 ## some global options
 getOption("tidync.large.data.check")
@@ -69,7 +69,12 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Michael Sumner \email{mdsumner@gmail.com}
+\strong{Maintainer}: Michael Sumner \email{mdsumner@gmail.com} [copyright holder]
+
+Authors:
+\itemize{
+  \item Michael Sumner \email{mdsumner@gmail.com} [copyright holder]
+}
 
 Other contributors:
 \itemize{

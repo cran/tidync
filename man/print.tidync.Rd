@@ -11,14 +11,17 @@
 
 \item{...}{reserved}
 }
+\value{
+the input object invisibly
+}
 \description{
 Provide a summary of variables and dimensions, organized by their 'grid' (or
 'shape') and with a summary of any slicing operations provided as 'start' and
 'count' summaries for each dimension in the active grid.
 }
 \details{
-See \link[=tidync]{tidync} for detail about the object, and
-\link[=hyper_vars]{hyper_vars} for programmatic access to the active grid's
+See \link{tidync} for detail about the object, and
+\link{hyper_vars} for programmatic access to the active grid's
 variable and dimension information.
 
 The print summary is organized in two sections, the first is available grids
@@ -48,7 +51,7 @@ argo <- tidync(argofile)
 print(argo)
 
 ## the print is modified by choosing a new grid or running filters
-argo \%>\% activate("D7,D9,D11,D8")
+argo |> activate("D7,D9,D11,D8")
 
-argo \%>\% hyper_filter(N_LEVELS = index > 300)
+argo |> hyper_filter(N_LEVELS = index > 300)
 }

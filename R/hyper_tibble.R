@@ -22,8 +22,6 @@
 #' @param force ignore caveats about large extraction and just do it
 #' @return a `tbl_df`
 #' @export
-#' @importFrom dplyr %>%
-#' @export %>%
 #' @seealso [hyper_array()] and [hyper_tbl_cube()]  which are also delay-breaking 
 #' functions that cause data to be read 
 #' @examples
@@ -34,19 +32,21 @@
 #' library(dplyr)
 #' lapply(hyper_array(f, lat = lat > 0, lon = index > 3000), dim)
 #'
-#'  ht <- hyper_tibble(rnc) %>%
-#'  filter(!is.na(chlor_a))
+#' ht <- hyper_tibble(rnc) |>
+#' filter(!is.na(chlor_a))
 #' ht
-#' library(ggplot2)
-#' ggplot(ht %>% filter(!is.na(chlor_a)),
-#' aes(x = lon, y = lat, fill = chlor_a)) + geom_tile()
+#' if (requireNamespace("ggplot2")) {
+#'  library(ggplot2)
+#'  ggplot(ht |> filter(!is.na(chlor_a)),
+#'  aes(x = lon, y = lat, fill = chlor_a)) + geom_tile()
+#' }
 hyper_tibble <- function(x, ..., na.rm = TRUE, force = FALSE) {
   UseMethod("hyper_tibble")
 }
 #' @name hyper_tibble
 #' @export
 hyper_tibble.character <- function(x, ..., na.rm = TRUE, force = FALSE) {
-  tidync(x) %>% hyper_filter(...) %>% hyper_tibble(na.rm = na.rm, force = force)
+  tidync(x) |> hyper_filter(...) |> hyper_tibble(na.rm = na.rm, force = force)
 }
 #' @name hyper_tibble
 #' @export
@@ -55,16 +55,24 @@ hyper_tibble.tidync<- function(x, ..., na.rm = TRUE, force = FALSE) {
   slabs <- hyper_array(x, ...,  force = force)
   if (na.rm) all_na <- Reduce(`&`, lapply(slabs, 
                                           function(a) is.na(as.vector(a))))
-  total_prod <- prod(dim(slabs[[1]]))
+  total_prod <- length(slabs[[1]])
   out <- tibble::as_tibble(lapply(slabs, as.vector))
   
   prod_dims <- 1
-  dn <- dimnames(slabs[[1]])
-  nm <- names(dn)
+  trans <- attr(slabs, "transforms")
 
-  for (i in seq_along(nm)) {
-    out[[nm[i]]] <- rep(dn[[i]], each = prod_dims, length.out = total_prod)
-    prod_dims <- prod_dims * length(dn[[i]]) 
+  for (i in seq_along(trans)) {
+    nm <- names(trans)[i]
+    nr <- sum(trans[[i]]$selected)
+    
+    out[[nm]] <- if ("timestamp" %in% colnames(trans[[i]]))
+      rep(dplyr::filter(trans[[nm]], .data$selected)[["timestamp"]],
+          each = prod_dims, length.out = total_prod)
+    else
+      rep(dplyr::filter(trans[[nm]], .data$selected)[[nm]], 
+          each = prod_dims, length.out = total_prod)
+
+    prod_dims <- prod_dims * nr
   }
   if (na.rm) out <- dplyr::filter(out, !all_na)
  out
